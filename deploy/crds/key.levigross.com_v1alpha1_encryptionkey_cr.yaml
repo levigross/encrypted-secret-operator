@@ -1,0 +1,7 @@
+apiVersion: key.levigross.com/v1alpha1
+kind: EncryptionKey
+metadata:
+  name: example-encryptionkey
+spec:
+  # Add fields here
+  size: 3

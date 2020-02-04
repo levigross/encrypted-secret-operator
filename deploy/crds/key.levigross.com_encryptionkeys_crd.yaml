@@ -1,0 +1,72 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: encryptionkeys.key.levigross.com
+spec:
+  group: key.levigross.com
+  names:
+    kind: EncryptionKey
+    listKind: EncryptionKeyList
+    plural: encryptionkeys
+    singular: encryptionkey
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: EncryptionKey is the Schema for the encryptionkeys API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: EncryptionKeySpec defines the desired state of EncryptionKey
+          properties:
+            passphrase:
+              description: If you supply an encrypted key, we can decrypt it when
+                using it. *Note* we may no effort to scrub this value from memory
+                afterwards.
+              type: string
+            privateEncryptionKey:
+              description: PublicEncryptionKey should be used if you want to validate
+                that the private key matches the public key
+              format: byte
+              type: string
+            type:
+              description: The type of encryption key that you used to encrypt the
+                data
+              enum:
+              - GPG
+              - SSH
+              type: string
+          required:
+          - privateEncryptionKey
+          - type
+          type: object
+        status:
+          description: EncryptionKeyStatus defines the observed state of EncryptionKey
+          properties:
+            keyStatus:
+              items:
+                description: KeyStatus is what we use to tell our user about the status
+                  of the keys that they have submitted
+                type: object
+              type: array
+          required:
+          - keyStatus
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
